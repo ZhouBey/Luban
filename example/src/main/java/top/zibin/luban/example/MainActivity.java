@@ -3,6 +3,7 @@ package top.zibin.luban.example;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
@@ -176,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
         .ignoreBy(100)
         .setTargetDir(getPath())
         .setFocusAlpha(false)
+            .setCompressFormat(Bitmap.CompressFormat.WEBP)
         .filter(new CompressionPredicate() {
           @Override
           public boolean apply(String path) {

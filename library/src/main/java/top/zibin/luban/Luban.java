@@ -1,6 +1,7 @@
 package top.zibin.luban;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -33,6 +34,7 @@ public class Luban implements Handler.Callback {
   private OnCompressListener mCompressListener;
   private CompressionPredicate mCompressionPredicate;
   private List<InputStreamProvider> mStreamProviders;
+  private Bitmap.CompressFormat compressFormat;
 
   private Handler mHandler;
 
@@ -43,6 +45,8 @@ public class Luban implements Handler.Callback {
     this.mCompressListener = builder.mCompressListener;
     this.mLeastCompressSize = builder.mLeastCompressSize;
     this.mCompressionPredicate = builder.mCompressionPredicate;
+    this.compressFormat = builder.compressFormat;
+    this.focusAlpha = builder.focusAlpha;
     mHandler = new Handler(Looper.getMainLooper(), this);
   }
 
@@ -150,7 +154,7 @@ public class Luban implements Handler.Callback {
    */
   private File get(InputStreamProvider input, Context context) throws IOException {
     try {
-      return new Engine(input, getImageCacheFile(context, Checker.SINGLE.extSuffix(input)), focusAlpha).compress();
+      return new Engine(input, getImageCacheFile(context, Checker.SINGLE.extSuffix(input)), focusAlpha,compressFormat).compress();
     } finally {
       input.close();
     }
@@ -189,13 +193,13 @@ public class Luban implements Handler.Callback {
     if (mCompressionPredicate != null) {
       if (mCompressionPredicate.apply(path.getPath())
           && Checker.SINGLE.needCompress(mLeastCompressSize, path.getPath())) {
-        result = new Engine(path, outFile, focusAlpha).compress();
+        result = new Engine(path, outFile, focusAlpha,compressFormat).compress();
       } else {
         result = new File(path.getPath());
       }
     } else {
       result = Checker.SINGLE.needCompress(mLeastCompressSize, path.getPath()) ?
-          new Engine(path, outFile, focusAlpha).compress() :
+          new Engine(path, outFile, focusAlpha,compressFormat).compress() :
           new File(path.getPath());
     }
 
@@ -228,6 +232,7 @@ public class Luban implements Handler.Callback {
     private OnRenameListener mRenameListener;
     private OnCompressListener mCompressListener;
     private CompressionPredicate mCompressionPredicate;
+    private Bitmap.CompressFormat compressFormat;
     private List<InputStreamProvider> mStreamProviders;
 
     Builder(Context context) {
@@ -351,6 +356,11 @@ public class Luban implements Handler.Callback {
      */
     public Builder filter(CompressionPredicate compressionPredicate) {
       this.mCompressionPredicate = compressionPredicate;
+      return this;
+    }
+
+    public Builder setCompressFormat(Bitmap.CompressFormat compressFormat){
+      this.compressFormat = compressFormat;
       return this;
     }
 
