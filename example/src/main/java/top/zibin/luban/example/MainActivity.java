@@ -149,6 +149,8 @@ public class MainActivity extends AppCompatActivity {
             return Luban.with(MainActivity.this)
                 .setTargetDir(getPath())
                 .load(list)
+                    .setFocusAlpha(false)
+                    .setCompressFormat(Bitmap.CompressFormat.PNG)
                 .get();
           }
         })

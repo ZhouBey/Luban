@@ -99,7 +99,7 @@ class Engine {
             String path = tagImg.getAbsolutePath();
             String name = path.substring(0, path.lastIndexOf(".") + 1);
             name += suffixName;
-            tagImg.renameTo(new File(tagImg.getParent() + "\\" + name));
+            tagImg = new File(name);
         }
 
         FileOutputStream fos = new FileOutputStream(tagImg);
